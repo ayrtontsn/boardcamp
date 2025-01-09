@@ -1,11 +1,13 @@
 package com.boardcamp.api.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.boardcamp.api.dtos.CustomersDTO;
 import com.boardcamp.api.exceptions.GameNameConflict;
+import com.boardcamp.api.exceptions.IdNotFound;
 import com.boardcamp.api.models.CustomersModel;
 import com.boardcamp.api.repositories.CustomersRepository;
 
@@ -29,5 +31,13 @@ public class CustomersService {
 
         CustomersModel customer = new CustomersModel(dto);
         return customersRepository.save(customer);
+    }
+
+    public Optional<CustomersModel> getCustomerById(Long id){
+        if(!customersRepository.existsById(id)){
+            throw new IdNotFound("Customer with this id was not found");
+        }
+
+        return customersRepository.findById(id);
     }
 }

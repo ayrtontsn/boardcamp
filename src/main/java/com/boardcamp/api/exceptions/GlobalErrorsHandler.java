@@ -12,4 +12,9 @@ public class GlobalErrorsHandler {
     public ResponseEntity<String> handleGameNameConflict(GameNameConflict exception){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
     }
+
+    @ExceptionHandler(IdNotFound.class)
+    public ResponseEntity<String> handleIdNotFound(IdNotFound exception){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
 }
