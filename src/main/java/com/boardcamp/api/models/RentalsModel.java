@@ -1,5 +1,6 @@
 package com.boardcamp.api.models;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tb-rentals")
+@Table(name = "rentals")
 public class RentalsModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,10 +43,10 @@ public class RentalsModel {
     private LocalDate rentDate;
 
     @Column
-    private Long daysRented;
+    private Integer daysRented;
 
     @Column
-    private Date returnDate;
+    private LocalDate returnDate;
 
     @Column
     private Double originalPrice;
@@ -60,6 +61,17 @@ public class RentalsModel {
         this.delayFee = 0.0;
         this.customer = customersDTO;
         this.game = gamesDTO;
+    }
+
+    public RentalsModel(RentalsModel rental, Long diff){
+        this.id = rental.id;
+        this.customer = rental.customer;
+        this.game = rental.game;
+        this.rentDate = rental.rentDate;
+        this.daysRented = rental.daysRented;
+        this.returnDate = LocalDate.now();
+        this.originalPrice = rental.originalPrice;
+        this.delayFee = diff*rental.originalPrice;
 
     }
 }

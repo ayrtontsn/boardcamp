@@ -1,5 +1,10 @@
 package com.boardcamp.api.services;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,5 +48,24 @@ public class RentalsService {
         }
         RentalsModel rent = new RentalsModel(customer.get(),game.get(),dto);
         return rentalsRepository.save(rent);
+    }
+    
+    public RentalsModel returnRental(Long id){
+        Optional<RentalsModel> rental = rentalsRepository.findById(id);
+        if(rental.isEmpty()){
+            throw new IdNotFound("Rental with this id was not found");
+        }
+        
+        LocalDate today = LocalDate.now();
+        Long diff = ChronoUnit.DAYS.between(today, rental.get().getRentDate());
+        
+        RentalsModel rent;
+        if(diff-rental.get().getDaysRented()<=0){
+            rent = new RentalsModel(rental.get(),0L);
+        }else{
+            rent = new RentalsModel(rental.get(),diff - rental.get().getDaysRented());
+        }
+        
+        return rentalsRepository.saveAndFlush(rent);
     }
 }

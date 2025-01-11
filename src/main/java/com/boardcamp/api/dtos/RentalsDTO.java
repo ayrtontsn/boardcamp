@@ -17,5 +17,5 @@ public class RentalsDTO {
     
     @NotNull
     @Positive
-    private Long daysRented;
+    private Integer daysRented;
 }
