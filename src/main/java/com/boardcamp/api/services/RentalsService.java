@@ -11,7 +11,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.boardcamp.api.dtos.RentalsDTO;
+import com.boardcamp.api.exceptions.GameReturned;
 import com.boardcamp.api.exceptions.IdNotFound;
+import com.boardcamp.api.exceptions.NoGameReturned;
 import com.boardcamp.api.exceptions.NoGameStock;
 import com.boardcamp.api.models.CustomersModel;
 import com.boardcamp.api.models.GamesModel;
@@ -59,9 +61,13 @@ public class RentalsService {
     
     public RentalsModel returnRental(Long id){
         Optional<RentalsModel> rental = rentalsRepository.findById(id);
-        if(rental.isEmpty() || rental.get().getReturnDate()!=null){
-            throw new IdNotFound("Rental with this id was not found or already returned");
+        if(rental.isEmpty()){
+            throw new IdNotFound("Rental with this id was not found");
         }
+        else if(rental.get().getReturnDate()!=null){
+            throw new GameReturned("Rental with this id already returned");
+        }
+
         
         LocalDate today = LocalDate.now();
         Long diff = ChronoUnit.DAYS.between(today, rental.get().getRentDate());
@@ -73,5 +79,17 @@ public class RentalsService {
             rent = new RentalsModel(rental.get(),diff - rental.get().getDaysRented());
         }
         return rentalsRepository.saveAndFlush(rent);
+    }
+
+    public void deleteRental(Long id){
+        Optional<RentalsModel> rental = rentalsRepository.findById(id);
+        if(rental.isEmpty()){
+            throw new IdNotFound("Rental with this id was not found");
+        }
+        else if(rental.get().getReturnDate()==null){
+            throw new NoGameReturned("Rental with this id not yet been returned");
+        }
+
+        rentalsRepository.deleteById(id);
     }
 }

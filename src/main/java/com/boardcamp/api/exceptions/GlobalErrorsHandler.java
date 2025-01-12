@@ -22,4 +22,14 @@ public class GlobalErrorsHandler {
     public ResponseEntity<String> handleNoGameStock(NoGameStock exception){
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(exception.getMessage());
     }
+
+    @ExceptionHandler(GameReturned.class)
+    public ResponseEntity<String> handleGameReturned(GameReturned exception){
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(NoGameReturned.class)
+    public ResponseEntity<String> handleNoGameReturned(NoGameReturned exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
 }
