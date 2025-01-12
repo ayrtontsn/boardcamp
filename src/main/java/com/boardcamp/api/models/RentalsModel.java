@@ -72,6 +72,5 @@ public class RentalsModel {
         this.returnDate = LocalDate.now();
         this.originalPrice = rental.originalPrice;
         this.delayFee = diff*rental.originalPrice;
-
     }
 }

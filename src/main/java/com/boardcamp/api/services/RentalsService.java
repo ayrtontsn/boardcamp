@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.boardcamp.api.dtos.RentalsDTO;
 import com.boardcamp.api.exceptions.IdNotFound;
+import com.boardcamp.api.exceptions.NoGameStock;
 import com.boardcamp.api.models.CustomersModel;
 import com.boardcamp.api.models.GamesModel;
 import com.boardcamp.api.models.RentalsModel;
@@ -46,14 +47,20 @@ public class RentalsService {
         if(game.isEmpty()){
             throw new IdNotFound("Game with this id was not found");
         }
+
+        if(rentalsRepository.countByReturnDateIsNullAndGame_Id(game.get().getId())>=game.get().getStockTotal()){
+            throw new NoGameStock("Game out of stock!");
+        }
+
         RentalsModel rent = new RentalsModel(customer.get(),game.get(),dto);
+
         return rentalsRepository.save(rent);
     }
     
     public RentalsModel returnRental(Long id){
         Optional<RentalsModel> rental = rentalsRepository.findById(id);
-        if(rental.isEmpty()){
-            throw new IdNotFound("Rental with this id was not found");
+        if(rental.isEmpty() || rental.get().getReturnDate()!=null){
+            throw new IdNotFound("Rental with this id was not found or already returned");
         }
         
         LocalDate today = LocalDate.now();
@@ -65,7 +72,6 @@ public class RentalsService {
         }else{
             rent = new RentalsModel(rental.get(),diff - rental.get().getDaysRented());
         }
-        
         return rentalsRepository.saveAndFlush(rent);
     }
 }

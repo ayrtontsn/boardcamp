@@ -17,4 +17,9 @@ public class GlobalErrorsHandler {
     public ResponseEntity<String> handleIdNotFound(IdNotFound exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
+
+    @ExceptionHandler(NoGameStock.class)
+    public ResponseEntity<String> handleNoGameStock(NoGameStock exception){
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(exception.getMessage());
+    }
 }
