@@ -23,7 +23,7 @@ import com.boardcamp.api.repositories.RentalsRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class GameIntegrationTests {
+public class GamesIntegrationTests {
     @Autowired
     private TestRestTemplate restTemplate;
 
