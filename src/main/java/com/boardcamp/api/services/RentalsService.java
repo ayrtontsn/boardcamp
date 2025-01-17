@@ -1,10 +1,7 @@
 package com.boardcamp.api.services;
 
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,23 +57,23 @@ public class RentalsService {
     }
     
     public RentalsModel returnRental(Long id){
-        Optional<RentalsModel> rental = rentalsRepository.findById(id);
-        if(rental.isEmpty()){
+        Optional<RentalsModel> rentals = rentalsRepository.findById(id);
+        if(rentals.isEmpty()){
             throw new IdNotFound("Rental with this id was not found");
         }
-        else if(rental.get().getReturnDate()!=null){
+        else if(rentals.get().getReturnDate()!=null){
             throw new GameReturned("Rental with this id already returned");
         }
 
         
         LocalDate today = LocalDate.now();
-        Long diff = ChronoUnit.DAYS.between(today, rental.get().getRentDate());
+        Long diff = ChronoUnit.DAYS.between(today, rentals.get().getRentDate());
         
         RentalsModel rent;
-        if(diff-rental.get().getDaysRented()<=0){
-            rent = new RentalsModel(rental.get(),0L);
+        if(diff-rentals.get().getDaysRented()<=0){
+            rent = new RentalsModel(rentals.get(),0L);
         }else{
-            rent = new RentalsModel(rental.get(),diff - rental.get().getDaysRented());
+            rent = new RentalsModel(rentals.get(),diff - rentals.get().getDaysRented());
         }
         return rentalsRepository.saveAndFlush(rent);
     }
